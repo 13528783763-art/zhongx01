@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交易回单</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome图标 -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 引入QR码生成库 -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/qrcode.min.js"></script>
+  
+  <!-- 配置Tailwind自定义主题 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#CD212A',
+            secondary: '#666666',
+            lightgray: '#F5F5F5',
+            border: '#E0E0E0'
+          },
+          fontFamily: {
+            sans: ['Arial', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      }
+      .border-b-dashed {
+        border-bottom-style: dashed;
+      }
+    }
+  </style>
+  
+  <style>
+    /* 自定义表格样式 */
+    .receipt-table td {
+      padding: 0.75rem;
+      vertical-align: top;
+    }
+    
+    /* 平滑过渡效果 */
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800">
+  <div class="min-h-screen flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+    <!-- 回单卡片 -->
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden fade-in border border-gray-200">
+      <!-- 基本信息区域 -->
+      <div class="p-6">
+        <!-- 标题 -->
+        <div class="mb-6">
+          <h1 class="text-xl font-bold text-primary flex items-center">
+            <span class="inline-block w-3 h-6 bg-primary rounded-sm mr-2"></span>
+            基本信息
+          </h1>
+        </div>
+        
+        <!-- 交易信息表格 -->
+        <table class="w-full receipt-table">
+          <!-- 系统流水号 -->
+          <tr>
+            <td class="w-1/3 text-secondary py-2">系统流水号</td>
+            <td class="w-2/3 font-medium">COBP2025111217163061<br>6676000000</td>
+          </tr>
+          
+          <tr class="border-t border-border">
+            <td class="text-secondary py-2">交易时间</td>
+            <td class="font-medium">17:16:31</td>
+          </tr>
+          
+          <tr class="border-t border-border">
+            <td class="text-secondary py-2">付款人户名</td>
+            <td class="font-medium">深***********司</td>
+          </tr>
+          
+          <tr class="border-t border-border">
+            <td class="text-secondary py-2">付款人账号</td>
+            <td class="font-medium">811030***********1102</td>
+          </tr>
+          
+          <tr class="border-t border-border">
+            <td class="text-secondary py-2">收款人户名</td>
+            <td class="font-medium">许*</td>
+          </tr>
+          
+          <tr class="border-t border-border">
+            <td class="text-secondary py-2">收款人账号</td>
+            <td class="font-medium">621768******6541</td>
+          </tr>
+          
+          <tr class="border-t border-border">
+            <td class="text-secondary py-2">币种</td>
+            <td class="font-medium">001</td>
+          </tr>
+          
+          <tr class="border-t border-border">
+            <td class="text-secondary py-2">金额</td>
+            <td class="font-bold text-lg">2520.00</td>
+          </tr>
+        </table>
+        
+        <!-- 温馨提示 -->
+        <div class="mt-6 bg-lightgray p-4 rounded text-secondary text-sm">
+          <p class="font-medium mb-1">温馨提示</p>
+          <p>1、利用此功能查询银行票据和业务回单的真伪。</p>
+        </div>
+        
+        <!-- 二维码 -->
+        <div class="mt-6 flex justify-center">
+          <div id="qrcode" class="w-32 h-32 border border-gray-200 p-2 bg-white"></div>
+        </div>
+      </div>
+      
+      <!-- 页脚版权信息 -->
+      <div class="bg-gray-50 border-t border-border p-4 text-center text-xs text-secondary">
+        <p class="mb-1">中信银行股份有限公司版权所有</p>
+        <p class="mb-1">Copyright © CITIC Bank All rights reserved</p>
+        <p class="mb-1">京公网安备11010502020433号 京ICP备16038101号</p>
+        <p>本网站支持IPv6访问</p>
+      </div>
+    </div>
+    
+    <!-- 生成说明 -->
+    <div class="mt-6 text-center text-sm text-gray-500 max-w-md">
+      <p>注：二维码内容为交易流水信息，可用于验证交易真实性</p>
+    </div>
+  </div>
+
+  <!-- 生成二维码的脚本 -->
+  <script>
+    // 页面加载完成后生成二维码
+    document.addEventListener('DOMContentLoaded', function() {
+      // 创建二维码内容 - 包含关键交易信息
+      const qrContent = "交易流水号: COBP2025111217163061\n" +
+                        "交易时间: 17:16:31\n" +
+                        "金额: 2520.00元\n" +
+                        "收款人: 许*\n" +
+                        "来源: 中信银行";
+      
+      // 生成二维码
+      new QRCode(document.getElementById("qrcode"), {
+        text: qrContent,
+        width: 128,
+        height: 128,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      
+      // 添加卡片悬停效果
+      const card = document.querySelector('.bg-white');
+      card.addEventListener('mouseenter', () => {
+        card.classList.add('shadow-lg');
+        card.classList.remove('shadow-md');
+        card.style.transform = 'translateY(-2px)';
+        card.style.transition = 'all 0.3s ease';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.classList.remove('shadow-lg');
+        card.classList.add('shadow-md');
+        card.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+</body>
+</html>
